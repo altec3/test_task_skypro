@@ -30,9 +30,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
 
     # local
-    'network',
+    'network.apps.NetworkConfig',
 ]
 
 MIDDLEWARE = [
