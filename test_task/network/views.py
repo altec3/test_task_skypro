@@ -1,3 +1,4 @@
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, permissions
 
 from network.models import Contacts, Product, Distributor, Link, Network
@@ -45,6 +46,9 @@ class LinkViewSet(viewsets.ModelViewSet):
     queryset = Link.objects.all().prefetch_related('products').select_related('distributor', 'supplier')
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = LinkSerializer
+    #: Фильтрация цепочки "Распространитель-Поставщик" по стране
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['country']
 
 
 class NetworkViewSet(viewsets.ModelViewSet):
