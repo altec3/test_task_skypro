@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from network.models import Network, Link, Distributor, Product, Contacts
+from network.validators import ManufacturerValidator
 
 
 class ContactsSerializer(serializers.ModelSerializer):
@@ -32,6 +33,20 @@ class DistributorSerializer(serializers.ModelSerializer):
 
 class LinkSerializer(serializers.ModelSerializer):
     """Сериализатор модели Link"""
+
+    distributor = serializers.SlugRelatedField(
+        slug_field='title',
+        queryset=Distributor.objects.all()
+    )
+    supplier = serializers.SlugRelatedField(
+        slug_field='title',
+        queryset=Distributor.objects.all()
+    )
+    products = serializers.SlugRelatedField(
+        slug_field='model',
+        many=True,
+        queryset=Product.objects.all()
+    )
 
     class Meta:
         model = Link

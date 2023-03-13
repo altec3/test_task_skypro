@@ -1,0 +1,147 @@
+[
+{
+  "model": "network.contacts",
+  "pk": 1,
+  "fields": {
+    "email": "lenovo@mail.ru",
+    "country": "Japan",
+    "city": null,
+    "street": null,
+    "house": null
+  }
+},
+{
+  "model": "network.contacts",
+  "pk": 2,
+  "fields": {
+    "email": "citylink@mail.ru",
+    "country": "Russia",
+    "city": null,
+    "street": null,
+    "house": null
+  }
+},
+{
+  "model": "network.contacts",
+  "pk": 3,
+  "fields": {
+    "email": "eldorado@mail.ru",
+    "country": "Russia",
+    "city": null,
+    "street": null,
+    "house": null
+  }
+},
+{
+  "model": "network.product",
+  "pk": 1,
+  "fields": {
+    "title": "Mobile",
+    "model": "Moto G5s",
+    "release": "2023-03-13T06:12:38Z"
+  }
+},
+{
+  "model": "network.product",
+  "pk": 2,
+  "fields": {
+    "title": "Laptop",
+    "model": "Huawei MateBook D",
+    "release": "2023-03-13T06:12:55Z"
+  }
+},
+{
+  "model": "network.distributor",
+  "pk": 1,
+  "fields": {
+    "title": "Lenovo",
+    "contacts": 1,
+    "type": 1
+  }
+},
+{
+  "model": "network.distributor",
+  "pk": 2,
+  "fields": {
+    "title": "Citylink",
+    "contacts": 2,
+    "type": 2
+  }
+},
+{
+  "model": "network.distributor",
+  "pk": 3,
+  "fields": {
+    "title": "Eldorado",
+    "contacts": 3,
+    "type": 2
+  }
+},
+{
+  "model": "network.link",
+  "pk": 1,
+  "fields": {
+    "distributor": 1,
+    "supplier": null,
+    "debt": "0.00",
+    "country": "Japan",
+    "created": "2023-03-13T06:13:28.895Z",
+    "products": [
+      1,
+      2
+    ]
+  }
+},
+{
+  "model": "network.link",
+  "pk": 2,
+  "fields": {
+    "distributor": 2,
+    "supplier": 1,
+    "debt": "0.00",
+    "country": "Russia",
+    "created": "2023-03-13T06:14:22.530Z",
+    "products": [
+      1
+    ]
+  }
+},
+{
+  "model": "network.link",
+  "pk": 3,
+  "fields": {
+    "distributor": 3,
+    "supplier": 1,
+    "debt": "0.00",
+    "country": "Russia",
+    "created": "2023-03-13T06:15:20.745Z",
+    "products": [
+      2
+    ]
+  }
+},
+{
+  "model": "network.link",
+  "pk": 4,
+  "fields": {
+    "distributor": 2,
+    "supplier": 3,
+    "debt": "0.00",
+    "country": "Russia",
+    "created": "2023-03-13T06:44:02.966Z",
+    "products": [
+      2
+    ]
+  }
+},
+{
+  "model": "network.network",
+  "pk": 1,
+  "fields": {
+    "title": "Test",
+    "manufacturer": 1,
+    "distributor_1": 2,
+    "distributor_2": 3
+  }
+}
+]
