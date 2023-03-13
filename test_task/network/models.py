@@ -17,7 +17,7 @@ class Contacts(models.Model):
     country = models.CharField(verbose_name='Страна', blank=True, null=True, max_length=50)
     city = models.CharField(verbose_name='Город', blank=True, null=True, max_length=50)
     street = models.CharField(verbose_name='Улица', blank=True, null=True, max_length=255)
-    house = models.PositiveSmallIntegerField(verbose_name='Номер дома', null=True)
+    house = models.PositiveSmallIntegerField(verbose_name='Номер дома', blank=True, null=True)
 
     class Meta:
         verbose_name = 'Контакты'
@@ -57,6 +57,8 @@ class Distributor(BaseClass):
     product = models.ForeignKey(Product,
                                 verbose_name='Продукт',
                                 related_name='distributors',
+                                blank=True,
+                                null=True,
                                 on_delete=models.PROTECT
                                 )
     type = models.PositiveSmallIntegerField(verbose_name='Тип', choices=Type.choices, default=Type.factory)
@@ -70,21 +72,57 @@ class Distributor(BaseClass):
         return self.title
 
 
-class Network(models.Model):
-    """Сеть продаж"""
+class Link(models.Model):
+    """Звено сети"""
 
     distributor = models.ForeignKey(Distributor,
                                     verbose_name='Распространитель продукции',
-                                    related_name='net_distributors',
+                                    related_name='link_distributor',
                                     on_delete=models.PROTECT
                                     )
     supplier = models.ForeignKey(Distributor,
-                                 verbose_name='Поставщик',
-                                 related_name='net_suppliers',
+                                 verbose_name='Поставщик продукции',
+                                 related_name='link_supplier',
+                                 blank=True,
                                  null=True,
                                  on_delete=models.PROTECT
                                  )
-    debt = models.BigIntegerField(verbose_name='Задолженность', default=0)
+    debt = models.DecimalField(
+        verbose_name='Задолженность перед поставщиком',
+        max_digits=15,
+        decimal_places=2,
+        default=0.00
+    )
+
+    class Meta:
+        verbose_name = 'Звено сети продаж'
+        verbose_name_plural = 'Звенья сети продаж'
+        ordering = ['pk']
+
+    def __str__(self):
+        return self.distributor.title
+
+
+class Network(BaseClass):
+    """Сеть продаж"""
+
+    manufacturer = models.ForeignKey(Link,
+                                     verbose_name='Производитель продукции',
+                                     on_delete=models.PROTECT
+                                     )
+    distributor_1 = models.ForeignKey(Link,
+                                      verbose_name='Распространитель №1',
+                                      related_name='net_distr_1',
+                                      blank=True,
+                                      null=True,
+                                      on_delete=models.PROTECT)
+    distributor_2 = models.ForeignKey(Link,
+                                      verbose_name='Распространитель №2',
+                                      related_name='net_distr_2',
+                                      blank=True,
+                                      null=True,
+                                      on_delete=models.PROTECT
+                                      )
 
     class Meta:
         verbose_name = 'Сеть продаж'
