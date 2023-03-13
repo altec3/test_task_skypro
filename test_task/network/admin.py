@@ -12,7 +12,7 @@ class ContactsAdmin(admin.ModelAdmin):
     """Регистрация модели Contacts для отображения в панели администратора"""
 
     list_display = ('email', 'country', 'city', 'street', 'house',)
-    search_fields = ('email',)
+    search_fields = ('email', 'country',)
 
 
 @admin.register(Product)
@@ -27,24 +27,22 @@ class ProductAdmin(admin.ModelAdmin):
 class DistributorAdmin(admin.ModelAdmin):
     """Регистрация модели Distributor для отображения в панели администратора"""
 
-    list_display = ('title', 'contacts', 'product', 'created', 'type',)
-    search_fields = ('title', 'contacts__email', 'product__title',)
-    readonly_fields = ('created',)
+    list_display = ('title', 'contacts', 'type',)
+    search_fields = ('title', 'contacts__email', 'contacts__country',)
 
 
 @admin.register(Link)
 class LinkAdmin(admin.ModelAdmin):
     """Регистрация модели Link для отображения в панели администратора"""
 
-    list_display = ('distributor', 'supplier_link', 'debt',)
-    search_fields = ('distributor', 'supplier',)
-    list_filter = (
-        'distributor__contacts__city',
-        'supplier__contacts__city',
-    )
-    actions = ['clear_debt']
+    list_display = ('get_products', 'distributor', 'supplier_link', 'debt', 'country', 'created',)
+    search_fields = ('distributor__title', 'supplier__title',)
+    readonly_fields = ('created',)
+    list_filter = ('country',)
 
     #: Реализация admin action
+    actions = ['clear_debt']
+
     @admin.action(description='Очистить задолженность')
     def clear_debt(self, request: WSGIRequest, queryset: QuerySet):
         updated = queryset.update(debt=0)
@@ -54,12 +52,17 @@ class LinkAdmin(admin.ModelAdmin):
             updated,
         ) % updated, messages.SUCCESS)
 
+    #: Реализация отображения ManyToManyField
+    def get_products(self, obj: Link):
+        return ", ".join([p.model for p in obj.products.all()])
+    get_products.short_description = 'Продукция'
+
     #: Реализация ссылки на Поставщика
     def supplier_link(self, obj: Link):
         if obj.supplier:
             from django.utils.html import format_html
             url = u'<a href="{0}">{1}</a>'.format(
-                reverse('admin:network_link_change', args=(obj.supplier.pk,)),
+                reverse('admin:network_distributor_change', args=(obj.supplier.id,)),
                 obj.supplier
             )
             return format_html(url)
@@ -71,9 +74,6 @@ class NetworkAdmin(admin.ModelAdmin):
     """Регистрация модели Network для отображения в панели администратора"""
 
     list_display = ('title', 'manufacturer_link', 'distributor_1_link', 'distributor_2_link',)
-    list_filter = (
-        'manufacturer__distributor__contacts__city',
-    )
     search_fields = (
         'manufacturer__distributor__title',
         'distributor_1__distributor__title',
