@@ -34,3 +34,9 @@ python manage.py migrate
 ```python
 python manage.py loaddata network.json
 ```
+
+4. Создать администратора для админ панели
+
+```python
+python manage.py createsuperuser
+```
